@@ -1,13 +1,14 @@
-import openai, os
+import os
 
+from openai import OpenAI
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
-class GetTreatment(APIView):
+class GetTreatmentView(APIView):
     def post(self, request):
         description = request.data.get("description")
         if not description:
@@ -23,18 +24,19 @@ class GetTreatment(APIView):
         """
 
         try:
-            completion = openai.ChatCompletion.create(
+            completion = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.2,
             )
-            ai_response = completion.choices[0].message["content"]
+
+            ai_response = completion.choices[0].message.content
 
             return Response({"response": ai_response}, status=status.HTTP_200_OK)
 
-        except Exception as e:
+        except Exception:
             return Response(
-                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"error": str(Exception)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 
@@ -56,12 +58,13 @@ class ICDCodeView(APIView):
         """
 
         try:
-            completion = openai.ChatCompletion.create(
+            completion = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0,
             )
-            ai_response = completion.choices[0].message["content"]
+
+            ai_response = completion.choices[0].message.content
 
             return Response({"response": ai_response}, status=status.HTTP_200_OK)
 

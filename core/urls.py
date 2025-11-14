@@ -16,10 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from med_trans.views import GetTreatment, ICDCodeView
+from med_trans.views import GetTreatmentView, ICDCodeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/get-treatment/', GetTreatment.as_view(), name='get_treatment'),
+    path('api/get-treatment/', GetTreatmentView.as_view(), name='get_treatment'),
     path('api/icd-code/', ICDCodeView.as_view(), name='icd_code'),
 ]
